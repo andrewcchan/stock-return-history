@@ -1,55 +1,48 @@
-<!-- This is a static file -->
-<!-- served from your routes in server.js -->
-
-<!-- You might want to try something fancier: -->
-<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
-<!-- pug: https://pugjs.org/ -->
-<!-- haml: http://haml.info/ -->
-<!-- hbs(handlebars): http://handlebarsjs.com/ -->
-
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Welcome to Glitch!</title>
-    <meta name="description" content="A cool thing made with Glitch">
-    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/style.css">
-  </head>
-  <body>
-    <header>
-      <h1>
-        A Dream of the Future
-      </h1>
-    </header>
+	<head>
+		<title>Historial % Return</title>
+		<link rel="shortcut icon" href="images/favicon.ico">
+		<link type="text/css" rel="stylesheet" href="/homePage.css">
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		<!--<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>-->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+        <script type="text/javascript" language="javascript" src="/homePage.js"></script>
+        <script type="text/javascript" language="javascript" src="/testLeastSquares.js"></script>
+		
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+		 
+		<!-- Include Date Range Picker -->
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.js"></script>
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/2.1.27/daterangepicker.css" />
 
-    <main>
-      <p class="bold">Oh hi,</p>
-      <p>Tell me your hopes and dreams:</p>
-      <form>
-        <input type="text" maxlength="100" placeholder="Dreams!">
-        <button type="submit">Submit</button>
-      </form>
-      <section class="dreams">
-        <ul id="dreams">
-        </ul>
-      </section>
-    </main>
+		<!-- Include Font Awesome -->
+		<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+		
+	</head>
+<body>
+<div class="Title content">
+	<h1>Historical % Return Stock Calculator</h1>
+</div>
+	<form id = "StartEndForm">
+	<div id = "tickerDiv" class = "content">Ticker Symbol <i class="fas fa-chart-line"></i> <input class = "FormText" id = "ticker" type="text" name="ticker" value="FB"><br></div>
+	<div class = "content">Date Range <i class="fa fa-calendar-alt"></i> <input class = "FormText" id = "dateRange" type="text" name="daterange"  value="01/01/2017 - 01/01/2018" /></div>
+	</form>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6"></div>
+			<div id = "submitButton" class="col-md-1 content">Submit</div>
+		</div>
+	</div>
+	<div id = "companyName" class = "content"></div>
+	<div id = "returnVal" class = "content"></div>
+	<div id="chartContainer"class = "content">
+	<canvas id="myChart"></canvas>
+ </div>
 
-    <footer>
-      <a href="https://glitch.com">
-        Remix this in Glitch
-      </a>
-    </footer>
+<div id = "citationQuandl" class = "content"></div>
 
-    <!-- Your web-app is https, so your scripts need to be too -->
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
-            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
-            crossorigin="anonymous"></script>
-    <script src="/client.js"></script>
 
-  </body>
+</body>
 </html>
-

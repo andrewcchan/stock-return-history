@@ -1,0 +1,120 @@
+.content{
+	text-align: center;
+	color:white;
+	font-family: Arial;
+}
+body {
+	background: #6b6b6b;
+	background-image:url('images/background1.png');
+	border-width:  5px;
+}
+/* Style the tab */
+.tab {
+	overflow: hidden;
+	border-bottom: 1px solid white;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+	background-color: inherit;
+	float: left;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	padding: 14px 16px;
+	transition: 0.3s;
+	font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+	background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+	background-color: #000;
+}
+
+/* Style the tab content */
+.tabcontent {
+	display: none;
+	padding: 6px 12px;
+	border-top: none;
+}
+
+#header {
+	position: center;
+	width: 600px;
+	height: 70px;
+	text-align: center;
+
+	color: white;
+	font-size: 1em;
+	font-weight: bold;
+	font-style: normal;
+	font-family: sans-serif;
+    margin: 0 auto;
+	padding: 5px;
+		border-style: none;
+	/*
+	border-style: solid;
+	border-color: white;
+        border-width:  5px;
+	box-shadow: 0.5em 0.5em 1px #A6A6A6;
+	*/
+}
+
+#companyName
+{
+	margin-bottom:0px;
+}
+
+#returnVal
+{
+	margin-top:0px;
+}
+
+
+.FormText {
+	color:grey;
+	text-align:left;
+}
+#linkTable {
+    margin-left:auto; 
+    margin-right:auto; 
+ }
+
+
+#p{
+	text-align: center;
+	margin:0px;
+}
+			
+#chartContainer{
+    width:50em;
+	height:25em;
+	margin-left: auto;
+    margin-right: auto;
+}
+
+#chartBckgnd{
+    background-color: white;
+}
+
+#tickerDiv{
+	margin: 5px;
+}
+
+#submitButton{
+
+	background: grey;
+	padding: 5px 5px 5px 5px;	
+}
+#StartEndForm{
+    padding-bottom: 1em;
+}
+::placeholder {
+    color: Gainsboro;
+    opacity: 1; /* Firefox */
+}
