@@ -5,6 +5,8 @@
 var express = require('express');
 var app = express();
 
+var port = process.env.PORT || 8080;
+
 // we've started you off with Express, 
 // but feel free to use whatever libs or frameworks you'd like through `package.json`.
 
@@ -16,13 +18,25 @@ app.get("/", function (request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
 
-
-// set the port of our application
-// process.env.PORT lets the port be set by Heroku
-var port = process.env.PORT || 8080;
-
-
-
-app.listen(port, function() {
-    console.log('Our app is running on http://localhost:' + port);
+app.get("/dreams", function (request, response) {
+  response.send(dreams);
 });
+
+// could also use the POST body instead of query string: http://expressjs.com/en/api.html#req.body
+app.post("/dreams", function (request, response) {
+  dreams.push(request.query.dream);
+  response.sendStatus(200);
+});
+
+// Simple in-memory store for now
+var dreams = [
+  "Find and count some sheep",
+  "Climb a really tall mountain",
+  "Wash the dishes"
+];
+
+// listen for requests :)
+var listener = app.listen(port, function () {
+  console.log('Your app is listening on port ' + listener.address().port);
+});
+
