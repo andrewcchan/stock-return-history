@@ -62,7 +62,7 @@ function()
 			var tIncrement = [];
 			var stockData = [];
 			///***TEST DOWNLOAD****///
-			var text = jsonData;
+			var text = this.responseText;
 			var filename = "hello.json";
 			download(filename, text);
 			///***test download***///
