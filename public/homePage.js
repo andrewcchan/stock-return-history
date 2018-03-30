@@ -31,6 +31,11 @@ function()
 		{
 			var jsonDataMeta = JSON.parse( this.responseText);
 			
+			///***TEST DOWNLOAD****///
+			var text = jsonData;
+			var filename = "hello.json";
+			download(filename, text);
+			///***test download***///
 			//Makes sure there is data
 			if(jsonDataMeta.dataset.name.length)
 			{
@@ -201,6 +206,20 @@ function openTab(evt, cityName) {
     document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
 }
+
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
 
 var sp500Ticker = [
   {
