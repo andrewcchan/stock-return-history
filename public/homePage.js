@@ -61,11 +61,6 @@ function()
 			var jsonData = JSON.parse( this.responseText);
 			var tIncrement = [];
 			var stockData = [];
-			///***TEST DOWNLOAD****///
-			var text = this.responseText;
-			var filename = "hello.json";
-			download(filename, text);
-			///***test download***///
 			//Makes sure there is data
 			if(jsonData.dataset_data.data.length>0)
 			{
