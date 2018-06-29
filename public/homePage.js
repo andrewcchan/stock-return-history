@@ -5,9 +5,7 @@ function()
 	var chart;
 
 	//////////////////////////////////////////////////////////////////////////////////
-
-  //Set input to use daterangepicker
-  $('input[name="daterange"]').daterangepicker();
+ 
   
   //calculate today's date to set the daterangepicker
   var today = new Date();
@@ -15,8 +13,6 @@ function()
   var mm = today.getMonth()+1; //January is 0!
   var yyyy = today.getFullYear();
   var yyyyOld = yyyy - 1;
-
-  console.log("yyyyOld "+ yyyyOld);
 
   if(dd<10) {
       dd = '0'+dd
@@ -29,11 +25,13 @@ function()
   today = mm + '/' + dd + '/' + yyyy;
   var oneYearAgo = mm + '/' + dd + '/' + yyyyOld;
 
-  console.log("yyyyOld "+ yyyyOld);
 
-  var totalRange = today + " - " + oneYearAgo;
+  var totalRange = oneYearAgo + " - " + today;
   
   $('input[name="daterange"]').val(totalRange);
+
+  //Set input to use daterangepicker
+  $('input[name="daterange"]').daterangepicker();
 
   //
 	$("#submitButton").hover(function(){
