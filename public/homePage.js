@@ -6,8 +6,29 @@ function()
 
 	//////////////////////////////////////////////////////////////////////////////////
 
-	$('input[name="daterange"]').daterangepicker();
-	
+  //Set input to use daterangepicker
+  $('input[name="daterange"]').daterangepicker();
+  
+  //calculate today's date to set the daterangepicker
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth()+1; //January is 0!
+  var yyyy = today.getFullYear();
+
+  if(dd<10) {
+      dd = '0'+dd
+  } 
+
+  if(mm<10) {
+      mm = '0'+mm
+  } 
+
+  today = mm + '/' + dd + '/' + yyyy;
+  var oneYearAgo = mm + '/' + dd + '/' + yyyy-1;
+  
+  $('input[name="daterange"]').val(oneYearAgo + " - " + today);
+
+  //
 	$("#submitButton").hover(function(){
         $(this).css({"background-color": "lightgrey", "cursor": "pointer"});
         }, function(){
