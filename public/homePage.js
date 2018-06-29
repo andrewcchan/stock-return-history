@@ -14,6 +14,9 @@ function()
   var dd = today.getDate();
   var mm = today.getMonth()+1; //January is 0!
   var yyyy = today.getFullYear();
+  var yyyyOld = yyyy - 1;
+
+  console.log("yyyyOld "+ yyyyOld);
 
   if(dd<10) {
       dd = '0'+dd
@@ -24,9 +27,13 @@ function()
   } 
 
   today = mm + '/' + dd + '/' + yyyy;
-  var oneYearAgo = mm + '/' + dd + '/' + yyyy-1;
+  var oneYearAgo = mm + '/' + dd + '/' + yyyyOld;
+
+  console.log("yyyyOld "+ yyyyOld);
+
+  var totalRange = today + " - " + oneYearAgo;
   
-  $('input[name="daterange"]').val(oneYearAgo + " - " + today);
+  $('input[name="daterange"]').val(totalRange);
 
   //
 	$("#submitButton").hover(function(){
