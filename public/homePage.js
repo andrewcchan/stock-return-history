@@ -85,7 +85,7 @@ function()
     
 
     var xhttp = new XMLHttpRequest();
-		var requestURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&outputsize=full&apikey=IO6HHQFO91UUGIFZ";
+		var requestURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol="+companyCode+"&outputsize=full&apikey=IO6HHQFO91UUGIFZ";
 		xhttp.open("GET", requestURL, true);
 	    xhttp.send();
 		xhttp.onreadystatechange = function() {
@@ -247,136 +247,7 @@ function()
 				};
       }
     }
-    /////////////////////////////////////////////////////
-				
-		var xhttp = new XMLHttpRequest();
-		var requestURL = wikiURL + companyCode + "/data.json?api_key=" + apiKey + "&column_index=4&exclude_column_names=true&start_date=" + startDate + "&end_date=" + endDate + "&order=asc&collapse=daily";
-		xhttp.open("GET", requestURL, true);
-	    xhttp.send();
-		xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) 
-		{
-			var jsonData = JSON.parse( this.responseText);
-			var tIncrement = [];
-			var stockData = [];
-			//Makes sure there is data
-			if(jsonData.dataset_data.data.length>0)
-			{
-				for (var i = 0; i < jsonData.dataset_data.data.length; i++) {
-					var counter = jsonData.dataset_data.data[i];
-					tIncrement.push(counter[0]);
-					stockData.push(counter[1]);
-				}
-
-				var initialVal = jsonData.dataset_data.data[0][1];
-				var finalVal = jsonData.dataset_data.data[jsonData.dataset_data.data.length-1][1];
-				
-				var returnVal = Number((finalVal-initialVal)/initialVal*100).toFixed(2);
-				document.getElementById("companyName").innerHTML = "<h2>" + companyName + "</h2>";
-				document.getElementById("returnVal").innerHTML = "<h3> Percent Return: " + returnVal + "% </h3>";
-				document.getElementById("citationQuandl").innerHTML = "<h6>Data from <a href=\"https://www.quandl.com/databases/WIKIP/usage/quickstart/api\"> Quandl</a> wiki prices</h6>";
-				//destroy old chart data first https://stackoverflow.com/questions/42788924/chartjs-bar-chart-showing-old-data-when-hovering
-				if (chart) {
-					chart.destroy();
-				}
-
-				//create x data from stockData from 0 to stockData.length
-				var xData = [];
-				for(var i = 0; i<stockData.length;i++)
-				{
-					xData.push(i);
-				}				
-				
-				//calculate regression slope and interecept
-				var m = linearRegressionSlope(xData, stockData);
-				var b = linearRegressionIntercept(xData, stockData);
-								
-				//create regression curve from regression equations
-				var regressionCurveArr = [];
-				for(var x = 0; x<stockData.length;x++)
-				{
-					regressionCurveArr.push(m*x+b);
-				}
-				
-				var stockCurveDataset = {
-					data: stockData,
-					label: "Closing Price ($)",
-					pointBackgroundColor:  'rgb(255, 255, 255)',
-					pointRadius: 2,
-					borderColor: 'rgb(255, 255, 255)',	
-					backgroundColor: 'rgba(220,220,220,0.3)'					
-				}
-				
-				var regressionCurveDataset = {
-					data: regressionCurveArr,
-					label: "Regression Curve ($)",
-					pointBackgroundColor:  'rgb(72, 209, 204)',
-					pointRadius: 1,					
-					borderColor: 'rgb(72, 209, 204)'
-				};
-				var ctx = document.getElementById('myChart').getContext('2d');
-					chart = new Chart(ctx, {
-					// The type of chart we want to create
-					type: 'line',
-
-					// The data for our dataset
-					data: {
-						labels: tIncrement,
-						datasets: [stockCurveDataset,regressionCurveDataset]
-					},
-
-					// Configuration options go here
-					options: {
-						
-						legend: {
-							display: true,
-							position: 'left',
-							labels:{
-								fontColor: '#ffffff'								
-							}
-						},
-						scales:{
-							xAxes: [{
-								gridLines:{
-									color: 'rgb(192, 192, 192)'
-								},
-								ticks:{
-									fontColor: 'rgb(192, 192, 192)'
-								}
-							}],
-							yAxes: [{
-								gridLines:{
-									color: 'rgb(192, 192, 192)'
-								},
-								ticks:{
-									fontColor: 'rgb(192, 192, 192)'
-								}
-							}]
-						},
-						 tooltips: {
-							mode: 'nearest',
-							intersect: false
-						}
-						
-					}
-				});
-
-				//onclick
-				var canvas = document.getElementById("myChart");
-				canvas.onclick = function(evt){
-				var activePoints = chart.getElementsAtEvent(evt);
-				// => activePoints is an array of points on the canvas that are at the same position as the click event.
-				if (activePoints[0]) {
-					var label = chart.data.labels[activePoints[0]._index];
-					console.log("label: " + label);
-					var value = chart.data.datasets[activePoints[0]._datasetIndex].data[activePoints[0]._index];
-					console.log("value: " + value);
-				}
-				};
-			
-			}
-		}
-	  };
+    ////////////////////////////////////////////////////
 
 
 	
