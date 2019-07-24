@@ -41,6 +41,8 @@ function()
     });
 	
 	$("#submitButton").on( "click", function() {
+
+
 		var wikiURL = "https://www.quandl.com/api/v3/datasets/WIKI/";
 		var apiKey = "dqgc4_9drB6jbTos2Sqt";
 		var companyCode = document.getElementById("ticker").value;
@@ -53,18 +55,18 @@ function()
 		xhttpMeta.open("GET", requestURLMeta, true);
 	    xhttpMeta.send();
 		xhttpMeta.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) 
-		{
-			var jsonDataMeta = JSON.parse( this.responseText);
-			
-			
-			//Makes sure there is data
-			if(jsonDataMeta.dataset.name.length)
-			{
-				companyPreprocessedName = jsonDataMeta.dataset.name;
-				companyName = companyPreprocessedName.replace('Prices, Dividends, Splits and Trading Volume','Closing Prices');
-			}
-		}
+      if (this.readyState == 4 && this.status == 200) 
+      {
+        var jsonDataMeta = JSON.parse( this.responseText);
+        
+        
+        //Makes sure there is data
+        if(jsonDataMeta.dataset.name.length)
+        {
+          companyPreprocessedName = jsonDataMeta.dataset.name;
+          companyName = companyPreprocessedName.replace('Prices, Dividends, Splits and Trading Volume','Closing Prices');
+        }
+      }
 		}
 
 		//dataRequest
@@ -75,7 +77,177 @@ function()
 		
 		var startDate = dateRange.substring(6,10) + "-" + dateRange.substring(0,2) + "-" + dateRange.substring(3,5);
 		
-		var endDate = dateRange.substring(19,23) + "-" + dateRange.substring(13,15) + "-" + dateRange.substring(16,18);
+    var endDate = dateRange.substring(19,23) + "-" + dateRange.substring(13,15) + "-" + dateRange.substring(16,18);
+    
+    //NEW using alpha reference
+    //https://www.alphavantage.co/
+    var apiKeyAV = "IO6HHQFO91UUGIFZ";
+    
+
+    var xhttp = new XMLHttpRequest();
+		var requestURL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&outputsize=full&apikey=IO6HHQFO91UUGIFZ";
+		xhttp.open("GET", requestURL, true);
+	    xhttp.send();
+		xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) 
+      {
+        var jsonData = JSON.parse( this.responseText);
+        //Makes sure there is data
+        //https://stackoverflow.com/questions/4044845/retrieving-a-property-of-a-json-object-by-index
+
+
+        //GET START AND END INDEXES
+
+        if(jsonData["Time Series (Daily)"][startDate]!=null)//means there is actual data for that date
+        {          
+        }
+        else //for now subtract 2 days if it returns undefined
+        {
+          startDate = dateRange.substring(6,10) + "-" + dateRange.substring(0,2) + "-" + (Number(dateRange.substring(3,5))-2).toString();
+        }
+
+        if(jsonData["Time Series (Daily)"][endDate]!=null)//means there is actual data for that date
+        {
+        }
+        else //for now subtract 2 days if it returns undefined
+        {
+          endDate = dateRange.substring(19,23) + "-" + dateRange.substring(13,15) + "-" + (Number(dateRange.substring(16,18))-2).toString();
+        }
+
+
+        var startDateObject = new Date(startDate+" 00:00");
+
+        console.log("start "+startDateObject);
+
+        var endDateObject = new Date(endDate+" 00:00");
+        console.log("end "+endDateObject);
+
+        var numDays  = (endDateObject.getTime()-startDateObject.getTime())/8.64e+7;
+
+        //construct the graph
+        var tIncrement = [];
+        var stockData = [];
+        var currentDate = startDateObject;
+        //https://stackoverflow.com/questions/3674539/incrementing-a-date-in-javascript
+        for(var i = 0; i< numDays; i++)//index 0 is the most current date
+        {
+          if(jsonData["Time Series (Daily)"][currentDate.toISOString().substring(0,10)]!=null){ 
+            tIncrement.push(currentDate.toISOString().substring(0,10));
+            console.log("isostring"+currentDate.toISOString().substring(0,10));
+            stockData.push(jsonData["Time Series (Daily)"][currentDate.toISOString().substring(0,10)]["4. close"]);
+          }
+          currentDate.setDate(currentDate.getDate()+1);
+        }
+        console.log("tIncrement "+tIncrement);
+        console.log("stockData "+stockData);
+        var initialVal = stockData[0];
+				var finalVal = stockData[stockData.length-1];
+				
+				var returnVal = Number((finalVal-initialVal)/initialVal*100).toFixed(2);
+				document.getElementById("companyName").innerHTML = "<h2>" + companyName + "</h2>";
+				document.getElementById("returnVal").innerHTML = "<h3> Percent Return: " + returnVal + "% </h3>";
+				document.getElementById("citationQuandl").innerHTML = "<h6>Data from <a href=\"https://www.alphavantage.co/\"> Alphavantage </a> prices</h6>";
+				//destroy old chart data first https://stackoverflow.com/questions/42788924/chartjs-bar-chart-showing-old-data-when-hovering
+				if (chart) {
+					chart.destroy();
+				}
+
+				//create x data from stockData from 0 to stockData.length
+				var xData = [];
+				for(var i = 0; i<stockData.length;i++)
+				{
+					xData.push(i);
+				}				
+				
+				//calculate regression slope and interecept
+				var m = linearRegressionSlope(xData, stockData);
+				var b = linearRegressionIntercept(xData, stockData);
+								
+				//create regression curve from regression equations
+				var regressionCurveArr = [];
+				for(var x = 0; x<stockData.length;x++)
+				{
+					regressionCurveArr.push(m*x+b);
+				}
+				
+				var stockCurveDataset = {
+					data: stockData,
+					label: "Closing Price ($)",
+					pointBackgroundColor:  'rgb(255, 255, 255)',
+					pointRadius: 2,
+					borderColor: 'rgb(255, 255, 255)',	
+					backgroundColor: 'rgba(220,220,220,0.3)'					
+				}
+				
+				var regressionCurveDataset = {
+					data: regressionCurveArr,
+					label: "Regression Curve ($)",
+					pointBackgroundColor:  'rgb(72, 209, 204)',
+					pointRadius: 1,					
+					borderColor: 'rgb(72, 209, 204)'
+				};
+				var ctx = document.getElementById('myChart').getContext('2d');
+					chart = new Chart(ctx, {
+					// The type of chart we want to create
+					type: 'line',
+
+					// The data for our dataset
+					data: {
+						labels: tIncrement,
+						datasets: [stockCurveDataset,regressionCurveDataset]
+					},
+
+					// Configuration options go here
+					options: {
+						
+						legend: {
+							display: true,
+							position: 'left',
+							labels:{
+								fontColor: '#ffffff'								
+							}
+						},
+						scales:{
+							xAxes: [{
+								gridLines:{
+									color: 'rgb(192, 192, 192)'
+								},
+								ticks:{
+									fontColor: 'rgb(192, 192, 192)'
+								}
+							}],
+							yAxes: [{
+								gridLines:{
+									color: 'rgb(192, 192, 192)'
+								},
+								ticks:{
+									fontColor: 'rgb(192, 192, 192)'
+								}
+							}]
+						},
+						 tooltips: {
+							mode: 'nearest',
+							intersect: false
+						}
+						
+					}
+				});
+
+				//onclick
+				var canvas = document.getElementById("myChart");
+				canvas.onclick = function(evt){
+				var activePoints = chart.getElementsAtEvent(evt);
+				// => activePoints is an array of points on the canvas that are at the same position as the click event.
+				if (activePoints[0]) {
+					var label = chart.data.labels[activePoints[0]._index];
+					console.log("label: " + label);
+					var value = chart.data.datasets[activePoints[0]._datasetIndex].data[activePoints[0]._index];
+					console.log("value: " + value);
+				}
+				};
+      }
+    }
+    /////////////////////////////////////////////////////
 				
 		var xhttp = new XMLHttpRequest();
 		var requestURL = wikiURL + companyCode + "/data.json?api_key=" + apiKey + "&column_index=4&exclude_column_names=true&start_date=" + startDate + "&end_date=" + endDate + "&order=asc&collapse=daily";
