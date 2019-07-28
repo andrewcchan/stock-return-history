@@ -72,9 +72,6 @@ function()
 		//dataRequest
 		var dateRange = document.getElementById("dateRange").value;
 		
-		
-		console.log("dateRange Substring: " + dateRange.substring(0,2));
-		
 		var startDate = dateRange.substring(6,10) + "-" + dateRange.substring(0,2) + "-" + dateRange.substring(3,5);
 		
     var endDate = dateRange.substring(19,23) + "-" + dateRange.substring(13,15) + "-" + dateRange.substring(16,18);
@@ -116,12 +113,7 @@ function()
 
 
         var startDateObject = new Date(startDate+" 00:00");
-
-        console.log("start "+startDateObject);
-
         var endDateObject = new Date(endDate+" 00:00");
-        console.log("end "+endDateObject);
-
         var numDays  = (endDateObject.getTime()-startDateObject.getTime())/8.64e+7;
 
         //construct the graph
@@ -133,13 +125,10 @@ function()
         {
           if(jsonData["Time Series (Daily)"][currentDate.toISOString().substring(0,10)]!=null){ 
             tIncrement.push(currentDate.toISOString().substring(0,10));
-            console.log("isostring"+currentDate.toISOString().substring(0,10));
-            stockData.push(jsonData["Time Series (Daily)"][currentDate.toISOString().substring(0,10)]["4. close"]);
+            stockData.push(Number(jsonData["Time Series (Daily)"][currentDate.toISOString().substring(0,10)]["4. close"])); //must cast string to num
           }
           currentDate.setDate(currentDate.getDate()+1);
         }
-        console.log("tIncrement "+tIncrement);
-        console.log("stockData "+stockData);
         var initialVal = stockData[0];
 				var finalVal = stockData[stockData.length-1];
 				
@@ -158,18 +147,20 @@ function()
 				{
 					xData.push(i);
 				}				
-				
+
+
 				//calculate regression slope and interecept
 				var m = linearRegressionSlope(xData, stockData);
-				var b = linearRegressionIntercept(xData, stockData);
-								
+        var b = linearRegressionIntercept(xData, stockData);
+        console.log("m "+m);
+        console.log("b "+b);
 				//create regression curve from regression equations
 				var regressionCurveArr = [];
 				for(var x = 0; x<stockData.length;x++)
 				{
 					regressionCurveArr.push(m*x+b);
 				}
-				
+
 				var stockCurveDataset = {
 					data: stockData,
 					label: "Closing Price ($)",
