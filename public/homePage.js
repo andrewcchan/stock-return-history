@@ -124,8 +124,8 @@ function()
         for(var i = 0; i< numDays; i++)//index 0 is the most current date
         {
           if(jsonData["Time Series (Daily)"][currentDate.toISOString().substring(0,10)]!=null){ 
-            tIncrement.push(currentDate.toISOString().substring(0,10));
-            stockData.push(Number(jsonData["Time Series (Daily)"][currentDate.toISOString().substring(0,10)]["4. close"])); //must cast string to num
+            tIncrement.push(currentDate.toISOString().substring(0,10));//ISOString needed to get YYYY-MM-DD https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+            stockData.push(Number(jsonData["Time Series (Daily)"][currentDate.toISOString().substring(0,10)]["4. close"])); //must cast string to num else regression won't work!
           }
           currentDate.setDate(currentDate.getDate()+1);
         }
