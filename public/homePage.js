@@ -148,6 +148,13 @@ function()
 					xData.push(i);
 				}				
 
+        ///////////////////////////////////////////////////
+        //test express
+        //https://api.jquery.com/jQuery.post/
+        $.post("/api/foo", { xData: xData, stockData:stockData }).done( function(data) {
+          console.log( "Foo function result:", data );
+        });
+        ///////////////////////////////////////////////////
 
 				//calculate regression slope and interecept
 				var m = linearRegressionSlope(xData, stockData);
@@ -241,7 +248,7 @@ function()
     ////////////////////////////////////////////////////
 
 
-	
+  
 
 	});
 	
