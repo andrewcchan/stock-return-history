@@ -151,98 +151,96 @@ function()
         ///////////////////////////////////////////////////
         //test express
         //https://api.jquery.com/jQuery.post/
-        $.post("/api/foo", { xData: xData, stockData:stockData }).done( function(data) {
-          console.log( "Foo function result:", data );
+        $.post("/api/foo", { xData: xData, stockData: stockData }).done( function(data) {
+          console.log( "m: ", data.m, "b: ", data.b );
+
+          //calculate regression slope and interecept
+          var m = data.m;
+          var b = data.b;
+
+          //create regression curve from regression equations
+          var regressionCurveArr = [];
+          for(var x = 0; x<stockData.length;x++)
+          {
+            regressionCurveArr.push(m*x+b);
+          }
+
+          var stockCurveDataset = {
+            data: stockData,
+            label: "Closing Price ($)",
+            pointBackgroundColor:  'rgb(255, 255, 255)',
+            pointRadius: 2,
+            borderColor: 'rgb(255, 255, 255)',	
+            backgroundColor: 'rgba(220,220,220,0.3)'					
+          }
+          
+          var regressionCurveDataset = {
+            data: regressionCurveArr,
+            label: "Regression Curve ($)",
+            pointBackgroundColor:  'rgb(72, 209, 204)',
+            pointRadius: 1,					
+            borderColor: 'rgb(72, 209, 204)'
+          };
+          var ctx = document.getElementById('myChart').getContext('2d');
+            chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'line',
+
+            // The data for our dataset
+            data: {
+              labels: tIncrement,
+              datasets: [stockCurveDataset,regressionCurveDataset]
+            },
+
+            // Configuration options go here
+            options: {
+              
+              legend: {
+                display: true,
+                position: 'left',
+                labels:{
+                  fontColor: '#ffffff'								
+                }
+              },
+              scales:{
+                xAxes: [{
+                  gridLines:{
+                    color: 'rgb(192, 192, 192)'
+                  },
+                  ticks:{
+                    fontColor: 'rgb(192, 192, 192)'
+                  }
+                }],
+                yAxes: [{
+                  gridLines:{
+                    color: 'rgb(192, 192, 192)'
+                  },
+                  ticks:{
+                    fontColor: 'rgb(192, 192, 192)'
+                  }
+                }]
+              },
+              tooltips: {
+                mode: 'nearest',
+                intersect: false
+              }
+              
+            }
+          });
+
+          //onclick
+          var canvas = document.getElementById("myChart");
+          canvas.onclick = function(evt){
+          var activePoints = chart.getElementsAtEvent(evt);
+          // => activePoints is an array of points on the canvas that are at the same position as the click event.
+          if (activePoints[0]) {
+            var label = chart.data.labels[activePoints[0]._index];
+            console.log("label: " + label);
+            var value = chart.data.datasets[activePoints[0]._datasetIndex].data[activePoints[0]._index];
+            console.log("value: " + value);
+          }
+          };
         });
-        ///////////////////////////////////////////////////
-
-				//calculate regression slope and interecept
-				var m = linearRegressionSlope(xData, stockData);
-        var b = linearRegressionIntercept(xData, stockData);
-        console.log("m "+m);
-        console.log("b "+b);
-				//create regression curve from regression equations
-				var regressionCurveArr = [];
-				for(var x = 0; x<stockData.length;x++)
-				{
-					regressionCurveArr.push(m*x+b);
-				}
-
-				var stockCurveDataset = {
-					data: stockData,
-					label: "Closing Price ($)",
-					pointBackgroundColor:  'rgb(255, 255, 255)',
-					pointRadius: 2,
-					borderColor: 'rgb(255, 255, 255)',	
-					backgroundColor: 'rgba(220,220,220,0.3)'					
-				}
-				
-				var regressionCurveDataset = {
-					data: regressionCurveArr,
-					label: "Regression Curve ($)",
-					pointBackgroundColor:  'rgb(72, 209, 204)',
-					pointRadius: 1,					
-					borderColor: 'rgb(72, 209, 204)'
-				};
-				var ctx = document.getElementById('myChart').getContext('2d');
-					chart = new Chart(ctx, {
-					// The type of chart we want to create
-					type: 'line',
-
-					// The data for our dataset
-					data: {
-						labels: tIncrement,
-						datasets: [stockCurveDataset,regressionCurveDataset]
-					},
-
-					// Configuration options go here
-					options: {
-						
-						legend: {
-							display: true,
-							position: 'left',
-							labels:{
-								fontColor: '#ffffff'								
-							}
-						},
-						scales:{
-							xAxes: [{
-								gridLines:{
-									color: 'rgb(192, 192, 192)'
-								},
-								ticks:{
-									fontColor: 'rgb(192, 192, 192)'
-								}
-							}],
-							yAxes: [{
-								gridLines:{
-									color: 'rgb(192, 192, 192)'
-								},
-								ticks:{
-									fontColor: 'rgb(192, 192, 192)'
-								}
-							}]
-						},
-						 tooltips: {
-							mode: 'nearest',
-							intersect: false
-						}
-						
-					}
-				});
-
-				//onclick
-				var canvas = document.getElementById("myChart");
-				canvas.onclick = function(evt){
-				var activePoints = chart.getElementsAtEvent(evt);
-				// => activePoints is an array of points on the canvas that are at the same position as the click event.
-				if (activePoints[0]) {
-					var label = chart.data.labels[activePoints[0]._index];
-					console.log("label: " + label);
-					var value = chart.data.datasets[activePoints[0]._datasetIndex].data[activePoints[0]._index];
-					console.log("value: " + value);
-				}
-				};
       }
     }
     ////////////////////////////////////////////////////

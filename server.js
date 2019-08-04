@@ -42,13 +42,14 @@ app.use(bodyParser.json());
 app.post('/api/foo', foo);
 
 function foo(req, res){
- var xData = [1,2,3,4,5];
- var stockData = [1,2,3,4,5];
- var m = leastSq.linearRegressionSlope(xData, stockData);
- var b = leastSq.linearRegressionIntercept(xData, stockData);
- var payload = 'helo workd m: '+m+"b: "+b;
- console.log("req.body "+JSON.stringify(req.body));
- res.send(payload);
+  //https://stackoverflow.com/questions/15677869/how-to-convert-a-string-of-numbers-to-an-array-of-numbers
+  //Need to map each string as a number (note we don't need .split since it's already and array of strings)
+  var xData = req.body.xData.map(Number);
+  var stockData = req.body.stockData.map(Number);
+  var m = leastSq.linearRegressionSlope(xData, stockData);
+  var b = leastSq.linearRegressionIntercept(xData, stockData);
+  var payload = {m: m,b: b};
+  res.send(payload);
 };
 
 // listen for requests :)
